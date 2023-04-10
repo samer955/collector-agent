@@ -1,4 +1,4 @@
-module collector-agent
+module github.com/samer955/collector-agent
 
 go 1.19
 

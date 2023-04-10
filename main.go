@@ -1,8 +1,8 @@
 package main
 
 import (
-	"collector-agent/service"
 	"fmt"
+	"github.com/samer955/collector-agent/service"
 	"os"
 	"os/signal"
 	"syscall"

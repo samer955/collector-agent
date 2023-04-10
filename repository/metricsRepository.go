@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"collector-agent/metrics"
+	"github.com/samer955/collector-agent/metrics"
 	"log"
 )
 

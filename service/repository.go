@@ -1,6 +1,6 @@
 package service
 
-import "collector-agent/metrics"
+import "github.com/samer955/collector-agent/metrics"
 
 type MetricRepository interface {
 	StoreCpu(cpu metrics.Cpu) error

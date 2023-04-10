@@ -1,14 +1,14 @@
 package service
 
 import (
-	"collector-agent/bootstrap"
-	"collector-agent/config"
-	"collector-agent/consumer"
-	"collector-agent/metrics"
-	"collector-agent/repository"
-	"collector-agent/utils"
 	"context"
 	"github.com/google/uuid"
+	"github.com/samer955/collector-agent/bootstrap"
+	"github.com/samer955/collector-agent/config"
+	"github.com/samer955/collector-agent/consumer"
+	"github.com/samer955/collector-agent/metrics"
+	"github.com/samer955/collector-agent/repository"
+	"github.com/samer955/collector-agent/utils"
 	"log"
 )
 
