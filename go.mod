@@ -3,6 +3,7 @@ module github.com/samer955/collector-agent
 go 1.19
 
 require (
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/libp2p/go-libp2p v0.26.4

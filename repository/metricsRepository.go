@@ -1,15 +1,33 @@
 package repository
 
 import (
+	"database/sql"
 	"github.com/samer955/collector-agent/metrics"
 	"log"
 )
 
 type MetricRepositoryImpl struct {
+	db *sql.DB
+}
+
+func NewMetricRepository(db *sql.DB) *MetricRepositoryImpl {
+	return &MetricRepositoryImpl{db: db}
 }
 
 func (r *MetricRepositoryImpl) StoreCpu(cpu metrics.Cpu) error {
 
+	query := "INSERT INTO `cpu`(`uuid`,`ip`,`model`,`utilization`,`time`) VALUES(?,?,?,?,?)"
+
+	_, err := r.db.Exec(query,
+		cpu.UUID,
+		cpu.Ip,
+		cpu.Model,
+		cpu.Utilization,
+		cpu.Time)
+
+	if err != nil {
+		return err
+	}
 	log.Println("STORED CPU METRIC: ", cpu)
 	return nil
 

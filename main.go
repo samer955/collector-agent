@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/samer955/collector-agent/config"
 	"github.com/samer955/collector-agent/service"
 	"os"
 	"os/signal"
@@ -12,6 +14,8 @@ func main() {
 
 	collector := service.NewCollector()
 	collector.Start()
+
+	defer config.GetDbConfig().Connection.Close()
 
 	//Run the program till its stopped (forced)
 	ch := make(chan os.Signal, 1)

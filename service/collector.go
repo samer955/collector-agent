@@ -29,12 +29,14 @@ func NewCollector() *Collector {
 
 	ctx := context.TODO()
 	cfg := config.GetConfig()
+	dbCfg := config.GetDbConfig()
 	node := bootstrap.InitializeNode(ctx, cfg.DiscoveryTag())
 	ps := consumer.NewPubSubService(ctx, node.Host)
+	repo := repository.NewMetricRepository(dbCfg.Connection)
 
 	return &Collector{
 		PubSubService: ps,
-		Repository:    &repository.MetricRepositoryImpl{},
+		Repository:    repo,
 		Context:       ctx,
 		Config:        cfg,
 	}
@@ -135,7 +137,10 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 		return
 	}
 	cpu.UUID = uuid.New().String()
-	c.Repository.StoreCpu(cpu)
+
+	if err := c.Repository.StoreCpu(cpu); err != nil {
+		log.Println(err)
+	}
 
 }
 
