@@ -1,6 +1,9 @@
 package metrics
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Cpu struct {
 	UUID        string    `json:"uuid"`
@@ -8,6 +11,11 @@ type Cpu struct {
 	Model       string    `json:"model"`
 	Utilization float64   `json:"utilization"`
 	Time        time.Time `json:"time"`
+}
+
+func (c Cpu) String() string {
+	return fmt.Sprintf("Hostname: %s, Model: %s, Utilization: %v, Time: %s",
+		c.Hostname, c.Model, c.Utilization, c.Time)
 }
 
 // System Latency between sender and collector
@@ -24,6 +32,11 @@ type System struct {
 	Time         time.Time `json:"time"`
 }
 
+func (s System) String() string {
+	return fmt.Sprintf("Hostname: %s, Ip: %s, Os: %s, Arch: %s, Platform: %s, Version: %s, Online-Users: %v, Latency: %v, Time: %s",
+		s.Hostname, s.Ip, s.Os, s.Architecture, s.Platform, s.Version, s.OnlineUsers, s.Latency, s.Time)
+}
+
 type Tcp struct {
 	UUID             string    `json:"uuid"`
 	Hostname         string    `json:"hostname"`
@@ -33,10 +46,20 @@ type Tcp struct {
 	Time             time.Time `json:"time"`
 }
 
+func (t Tcp) String() string {
+	return fmt.Sprintf("Hostname: %s, QueueSize: %v, Segments-Sent %v, Segments-Received: %v, Time: %s",
+		t.Hostname, t.QueueSize, t.SegmentsSent, t.SegmentsReceived, t.Time)
+}
+
 type Memory struct {
 	UUID        string    `json:"uuid"`
 	Hostname    string    `json:"hostname"`
 	Total       float64   `json:"total"`
 	Utilization float64   `json:"utilization,omitempty"`
 	Time        time.Time `json:"time"`
+}
+
+func (m Memory) String() string {
+	return fmt.Sprintf("Hostname: %s, Total: %v, Utilization %v, Time: %s",
+		m.Hostname, m.Total, m.Utilization, m.Time)
 }

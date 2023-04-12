@@ -144,7 +144,7 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED SYSTEM METRIC: ", sys)
+	log.Println("STORED SYSTEM METRIC: ", sys.String())
 
 }
 
@@ -161,7 +161,7 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED CPU METRIC: ", cpu)
+	log.Println("STORED CPU METRIC: ", cpu.String())
 
 }
 
@@ -178,7 +178,7 @@ func (c *Collector) handleTcpMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED TCP METRIC: ", tcp)
+	log.Println("STORED TCP METRIC: ", tcp.String())
 
 }
 
@@ -195,6 +195,6 @@ func (c *Collector) handleMemoryMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED MEMORY METRIC: ", mem)
+	log.Println("STORED MEMORY METRIC: ", mem.String())
 
 }
