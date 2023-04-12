@@ -31,6 +31,7 @@ func init() {
 	DB_PASSWORD := os.Getenv("DB_PASSWORD")
 	DB_NAME := os.Getenv("DB_NAME")
 
+	//this format is used for MYSQL Database
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
 
 	db, err := sql.Open(DB_DRIVER, dsn)
@@ -45,6 +46,6 @@ func init() {
 
 	dbConfig.Connection = db
 
-	log.Println("connected to Database")
+	log.Println("Connected to Database")
 
 }

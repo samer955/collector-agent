@@ -17,7 +17,7 @@ var config CollectorConfig
 func init() {
 
 	if err := godotenv.Load("config.env"); err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	topics := os.Getenv("TOPICS")

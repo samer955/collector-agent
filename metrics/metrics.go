@@ -4,7 +4,7 @@ import "time"
 
 type Cpu struct {
 	UUID        string    `json:"uuid"`
-	Ip          string    `json:"ip"`
+	Hostname    string    `json:"hostname"`
 	Model       string    `json:"model"`
 	Utilization float64   `json:"utilization"`
 	Time        time.Time `json:"time"`
@@ -23,7 +23,7 @@ type System struct {
 
 type Tcp struct {
 	UUID             string    `json:"uuid"`
-	Ip               string    `json:"ip"`
+	Hostname         string    `json:"hostname"`
 	QueueSize        int       `json:"tcp_queue_size"`
 	SegmentsReceived int       `json:"segments_received"`
 	SegmentsSent     int       `json:"segments_sent"`
@@ -32,7 +32,7 @@ type Tcp struct {
 
 type Memory struct {
 	UUID        string    `json:"uuid"`
-	Ip          string    `json:"ip"`
+	Hostname    string    `json:"hostname"`
 	Total       float64   `json:"total"`
 	Utilization float64   `json:"utilization,omitempty"`
 	Time        time.Time `json:"time"`
