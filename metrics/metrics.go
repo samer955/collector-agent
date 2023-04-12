@@ -24,7 +24,7 @@ type System struct {
 type Tcp struct {
 	UUID             string    `json:"uuid"`
 	Hostname         string    `json:"hostname"`
-	QueueSize        int       `json:"tcp_queue_size"`
+	QueueSize        int       `json:"queue_size"`
 	SegmentsReceived int       `json:"segments_received"`
 	SegmentsSent     int       `json:"segments_sent"`
 	Time             time.Time `json:"time"`
