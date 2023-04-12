@@ -34,7 +34,7 @@ func (r *MetricRepositoryImpl) StoreCpu(cpu metrics.Cpu) error {
 
 func (r *MetricRepositoryImpl) StoreSystem(sys metrics.System) error {
 
-	query := "INSERT INTO `system`(`uuid`,`ip`,`hostname`,`os`, `architecture`, `platform`, `version`,`time`) VALUES(?,?,?,?,?,?,?,?)"
+	query := "INSERT INTO `system`(`uuid`,`ip`,`hostname`,`os`, `architecture`, `platform`, `version`, `latency`,`online_users`,`time`) VALUES(?,?,?,?,?,?,?,?,?,?)"
 
 	_, err := r.db.Exec(query,
 		sys.UUID,
@@ -44,6 +44,8 @@ func (r *MetricRepositoryImpl) StoreSystem(sys metrics.System) error {
 		sys.Architecture,
 		sys.Platform,
 		sys.Version,
+		sys.Latency,
+		sys.OnlineUsers,
 		sys.Time)
 
 	if err != nil {
