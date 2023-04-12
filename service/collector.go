@@ -10,6 +10,7 @@ import (
 	"github.com/samer955/collector-agent/repository"
 	"github.com/samer955/collector-agent/utils"
 	"log"
+	"time"
 )
 
 type Collector struct {
@@ -125,6 +126,7 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 		return
 	}
 	sys.UUID = uuid.New().String()
+	sys.Latency = utils.LatencyCalc(time.Now(), sys.Time)
 
 	if err := c.Repository.StoreSystem(sys); err != nil {
 		log.Println(err)

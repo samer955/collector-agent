@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"log"
+	"time"
 )
 
 func FromStructToByte(data any) ([]byte, error) {
@@ -21,4 +22,15 @@ func FromBytesToStruct(from []byte, to any) error {
 		log.Printf("Unable to Unmarshal Bytes to %s \n", to)
 	}
 	return err
+}
+
+func LatencyCalc(actual, before time.Time) int64 {
+
+	if before.After(actual) {
+		log.Println("Negative Latency. Something went wrong. 0 default value is set.")
+		return 0
+	}
+
+	return actual.UnixMilli() - before.UnixMilli()
+
 }

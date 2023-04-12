@@ -10,6 +10,7 @@ type Cpu struct {
 	Time        time.Time `json:"time"`
 }
 
+// System Latency between sender and collector
 type System struct {
 	UUID         string    `json:"uuid"`
 	Ip           string    `json:"ip"`
@@ -18,6 +19,8 @@ type System struct {
 	Architecture string    `json:"architecture"`
 	Platform     string    `json:"platform"`
 	Version      string    `json:"version"`
+	OnlineUsers  int       `json:"online_users"`
+	Latency      int64     `json:"latency"`
 	Time         time.Time `json:"time"`
 }
 
