@@ -1,6 +1,7 @@
 package service
 
 import (
+	"container/list"
 	"context"
 	"github.com/google/uuid"
 	"github.com/samer955/collector-agent/bootstrap"
@@ -10,6 +11,7 @@ import (
 	"github.com/samer955/collector-agent/repository"
 	"github.com/samer955/collector-agent/utils"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -47,18 +49,26 @@ func (c *Collector) Start() {
 
 	c.subscribeToTopics()
 
-	//new channel to receive data
-	metricDataChan := make(chan MetricData)
+	//new linked list to receive data
+	metricDataList := list.New()
+	var mutex sync.Mutex
 
 	for _, topic := range c.Config.Topics() {
-		go c.ReadFromTopic(metricDataChan, topic)
+		go c.ReadFromTopic(metricDataList, topic, &mutex)
 	}
 
-	for metricData := range metricDataChan {
-		log.Println("New Message received: ", metricData.Name, string(metricData.Payload))
-		c.ConsumeMessages(metricData)
+	for {
+		mutex.Lock()
+		switch metricDataList.Len() > 0 {
+		case true:
+			metricData := metricDataList.Remove(metricDataList.Front()).(MetricData)
+			mutex.Unlock()
+			log.Println("New Message received: ", metricData.Name, string(metricData.Payload))
+			c.ConsumeMessages(metricData)
+		default:
+			mutex.Unlock()
+		}
 	}
-
 }
 
 func (c *Collector) subscribeToTopics() {
@@ -78,7 +88,7 @@ func (c *Collector) subscribeToTopics() {
 }
 
 // ReadFromTopic reads from a topic and write the messages in a channel in order to be consumed
-func (c *Collector) ReadFromTopic(msgChan chan MetricData, topic string) {
+func (c *Collector) ReadFromTopic(msgList *list.List, topic string, mutex *sync.Mutex) {
 
 	subscr, err := c.PubSubService.GetSubscription(topic)
 	if err != nil {
@@ -92,7 +102,9 @@ func (c *Collector) ReadFromTopic(msgChan chan MetricData, topic string) {
 			log.Println("Unable to read from topic:" + " " + subscr.Topic())
 			continue
 		} else {
-			msgChan <- MetricData{Name: topic, Payload: msg.Data}
+			mutex.Lock()
+			msgList.PushBack(MetricData{Name: topic, Payload: msg.Data})
+			mutex.Unlock()
 		}
 	}
 
