@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"github.com/samer955/collector-agent/metrics"
-	"log"
 )
 
 type MetricRepositoryImpl struct {
@@ -28,7 +27,7 @@ func (r *MetricRepositoryImpl) StoreCpu(cpu metrics.Cpu) error {
 	if err != nil {
 		return err
 	}
-	log.Println("STORED CPU METRIC: ", cpu)
+
 	return nil
 
 }
@@ -51,7 +50,6 @@ func (r *MetricRepositoryImpl) StoreSystem(sys metrics.System) error {
 		return err
 	}
 
-	log.Println("STORED SYSTEM METRIC: ", sys)
 	return nil
 
 }
@@ -72,7 +70,6 @@ func (r *MetricRepositoryImpl) StoreTcp(tcp metrics.Tcp) error {
 		return err
 	}
 
-	log.Println("STORED TCP METRIC: ", tcp)
 	return nil
 
 }
@@ -92,7 +89,6 @@ func (r *MetricRepositoryImpl) StoreMemory(mem metrics.Memory) error {
 		return err
 	}
 
-	log.Println("STORED MEMORY MEMORY ", mem)
 	return nil
 
 }

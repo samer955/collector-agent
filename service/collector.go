@@ -125,7 +125,12 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 		return
 	}
 	sys.UUID = uuid.New().String()
-	c.Repository.StoreSystem(sys)
+
+	if err := c.Repository.StoreSystem(sys); err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("STORED SYSTEM METRIC: ", sys)
 
 }
 
@@ -140,7 +145,9 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 
 	if err := c.Repository.StoreCpu(cpu); err != nil {
 		log.Println(err)
+		return
 	}
+	log.Println("STORED CPU METRIC: ", cpu)
 
 }
 
@@ -152,7 +159,12 @@ func (c *Collector) handleTcpMetric(metricData MetricData) {
 		return
 	}
 	tcp.UUID = uuid.New().String()
-	c.Repository.StoreTcp(tcp)
+
+	if err := c.Repository.StoreTcp(tcp); err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("STORED TCP METRIC: ", tcp)
 
 }
 
@@ -164,6 +176,11 @@ func (c *Collector) handleMemoryMetric(metricData MetricData) {
 		return
 	}
 	mem.UUID = uuid.New().String()
-	c.Repository.StoreMemory(mem)
+
+	if err := c.Repository.StoreMemory(mem); err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("STORED MEMORY METRIC: ", mem)
 
 }
