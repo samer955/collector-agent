@@ -1,5 +1,25 @@
 version: '3.3'
 services:
+
+  grafana:
+    links:
+      - db:db
+    image: grafana/grafana-enterprise
+    volumes:
+      - ./grafana:/var/lib/grafana:rw
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_DATABASE_HOST=db:3306
+      - GF_DATABASE_NAME=testdb
+      - GF_DATABASE_USER=user
+      - GF_DATABASE_PASSWORD=password
+      - GF_DATABASE_TYPE=mysql
+      - GF_DATABASE_MAX_OPEN_CONN=300
+    ports:
+      - "3000:3000"
+    depends_on: [ "db" ]
+
+
   db:
     image: mysql:5.7
     restart: always
@@ -20,6 +40,7 @@ services:
       # Where our data will be persisted
     volumes:
       - my-db:/var/lib/mysql
-# Names our volume
+
+
 volumes:
   my-db:

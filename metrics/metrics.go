@@ -14,7 +14,7 @@ type Cpu struct {
 }
 
 func (c Cpu) String() string {
-	return fmt.Sprintf("Hostname: %s, Model: %s, Utilization: %v, Time: %s",
+	return fmt.Sprintf("Hostname: %s, Model: %s, Utilization: %v%%, Time: %s",
 		c.Hostname, c.Model, c.Utilization, c.Time)
 }
 
@@ -33,7 +33,7 @@ type System struct {
 }
 
 func (s System) String() string {
-	return fmt.Sprintf("Hostname: %s, Ip: %s, Os: %s, Arch: %s, Platform: %s, Version: %s, Online-Users: %v, Latency: %v, Time: %s",
+	return fmt.Sprintf("Hostname: %s, Ip: %s, Os: %s, Arch: %s, Platform: %s, Version: %s, Online-Users: %v, Latency: %v ms, Time: %s",
 		s.Hostname, s.Ip, s.Os, s.Architecture, s.Platform, s.Version, s.OnlineUsers, s.Latency, s.Time)
 }
 
@@ -47,7 +47,7 @@ type Tcp struct {
 }
 
 func (t Tcp) String() string {
-	return fmt.Sprintf("Hostname: %s, QueueSize: %v, Segments-Sent %v, Segments-Received: %v, Time: %s",
+	return fmt.Sprintf("Hostname: %s, QueueSize: %v, Segments-Sent: %v, Segments-Received: %v, Time: %s",
 		t.Hostname, t.QueueSize, t.SegmentsSent, t.SegmentsReceived, t.Time)
 }
 
@@ -60,6 +60,6 @@ type Memory struct {
 }
 
 func (m Memory) String() string {
-	return fmt.Sprintf("Hostname: %s, Total: %v, Utilization %v, Time: %s",
+	return fmt.Sprintf("Hostname: %s, Total: %v, Utilization %v%%, Time: %s",
 		m.Hostname, m.Total, m.Utilization, m.Time)
 }

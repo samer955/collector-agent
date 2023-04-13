@@ -20,12 +20,17 @@ type Collector struct {
 	PubSubService *consumer.PubSubService
 	Repository    MetricRepository
 	Config        config.CollectorConfig
+	Mutex         sync.Mutex
 }
 
-// MetricData is a help struct where the name must match the topic name. Payload is the message received from other agent
+// MetricData is a help struct used to wrap the messaged received
+// The Name represents the topic name.
+// Payload is the message byte-content received.
+// From is the sender.
 type MetricData struct {
 	Name    string
 	Payload []byte
+	From    string
 }
 
 func NewCollector() *Collector {
@@ -42,31 +47,32 @@ func NewCollector() *Collector {
 		Repository:    repo,
 		Context:       ctx,
 		Config:        cfg,
+		Mutex:         sync.Mutex{},
 	}
 }
 
+// Start subscribes to the topics and listen on each topic for incoming messages.
 func (c *Collector) Start() {
 
 	c.subscribeToTopics()
 
 	//new linked list to receive data
 	metricDataList := list.New()
-	var mutex sync.Mutex
 
 	for _, topic := range c.Config.Topics() {
-		go c.ReadFromTopic(metricDataList, topic, &mutex)
+		go c.ReadFromTopic(metricDataList, topic)
 	}
 
 	for {
-		mutex.Lock()
+		c.Mutex.Lock()
 		switch metricDataList.Len() > 0 {
 		case true:
 			metricData := metricDataList.Remove(metricDataList.Front()).(MetricData)
-			mutex.Unlock()
-			log.Println("New Message received: ", metricData.Name, string(metricData.Payload))
+			c.Mutex.Unlock()
+			log.Printf(">>New Message received from %s. Metric Name: %s. Content: %s", metricData.From, metricData.Name, string(metricData.Payload))
 			c.ConsumeMessages(metricData)
 		default:
-			mutex.Unlock()
+			c.Mutex.Unlock()
 		}
 	}
 }
@@ -87,8 +93,8 @@ func (c *Collector) subscribeToTopics() {
 	}
 }
 
-// ReadFromTopic reads from a topic and write the messages in a channel in order to be consumed
-func (c *Collector) ReadFromTopic(msgList *list.List, topic string, mutex *sync.Mutex) {
+// ReadFromTopic reads messages from a topic and write them in a linked list to be consumed
+func (c *Collector) ReadFromTopic(msgList *list.List, topic string) {
 
 	subscr, err := c.PubSubService.GetSubscription(topic)
 	if err != nil {
@@ -102,16 +108,20 @@ func (c *Collector) ReadFromTopic(msgList *list.List, topic string, mutex *sync.
 			log.Println("Unable to read from topic:" + " " + subscr.Topic())
 			continue
 		} else {
-			mutex.Lock()
-			msgList.PushBack(MetricData{Name: topic, Payload: msg.Data})
-			mutex.Unlock()
+			c.Mutex.Lock()
+			msgList.PushBack(MetricData{Name: topic, Payload: msg.Data, From: msg.ReceivedFrom.ShortString()})
+			c.Mutex.Unlock()
 		}
 	}
 
 }
 
-// ConsumeMessages function filter the messages received in the channel by the topic name
+// ConsumeMessages function filters the messages received in the list by the topic name
+// the HandlePanicError() avoids the program to stop if a panic is thrown by the database e.g. duplicate primary key, database not connected
+
 func (c *Collector) ConsumeMessages(metricData MetricData) {
+
+	defer utils.HandlePanicError()
 
 	switch metricData.Name {
 
@@ -144,7 +154,7 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED SYSTEM METRIC: ", sys.String())
+	log.Println("STORED SYSTEM METRIC:", sys.String())
 
 }
 
@@ -161,7 +171,7 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED CPU METRIC: ", cpu.String())
+	log.Println("STORED CPU METRIC:", cpu.String())
 
 }
 
@@ -178,7 +188,7 @@ func (c *Collector) handleTcpMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED TCP METRIC: ", tcp.String())
+	log.Println("STORED TCP METRIC:", tcp.String())
 
 }
 
@@ -195,6 +205,6 @@ func (c *Collector) handleMemoryMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	log.Println("STORED MEMORY METRIC: ", mem.String())
+	log.Println("STORED MEMORY METRIC:", mem.String())
 
 }

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 )
@@ -33,4 +34,11 @@ func LatencyCalc(actual, before time.Time) int64 {
 
 	return actual.UnixMilli() - before.UnixMilli()
 
+}
+
+func HandlePanicError() {
+
+	if r := recover(); r != nil {
+		fmt.Println("Recovered. Error:\n", r)
+	}
 }
