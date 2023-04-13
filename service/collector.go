@@ -3,7 +3,6 @@ package service
 import (
 	"container/list"
 	"context"
-	"github.com/google/uuid"
 	"github.com/samer955/collector-agent/bootstrap"
 	"github.com/samer955/collector-agent/config"
 	"github.com/samer955/collector-agent/consumer"
@@ -147,7 +146,6 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	sys.UUID = uuid.New().String()
 	sys.Latency = utils.LatencyCalc(time.Now(), sys.Time)
 
 	if err := c.Repository.StoreSystem(sys); err != nil {
@@ -165,7 +163,6 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	cpu.UUID = uuid.New().String()
 
 	if err := c.Repository.StoreCpu(cpu); err != nil {
 		log.Println(err)
@@ -182,7 +179,6 @@ func (c *Collector) handleTcpMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	tcp.UUID = uuid.New().String()
 
 	if err := c.Repository.StoreTcp(tcp); err != nil {
 		log.Println(err)
@@ -199,7 +195,6 @@ func (c *Collector) handleMemoryMetric(metricData MetricData) {
 		log.Println(err)
 		return
 	}
-	mem.UUID = uuid.New().String()
 
 	if err := c.Repository.StoreMemory(mem); err != nil {
 		log.Println(err)
