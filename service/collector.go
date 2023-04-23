@@ -3,15 +3,15 @@ package service
 import (
 	"container/list"
 	"context"
+	"log"
+	"sync"
+	"time"
 	"github.com/samer955/collector-agent/bootstrap"
 	"github.com/samer955/collector-agent/config"
 	"github.com/samer955/collector-agent/consumer"
 	"github.com/samer955/collector-agent/metrics"
 	"github.com/samer955/collector-agent/repository"
 	"github.com/samer955/collector-agent/utils"
-	"log"
-	"sync"
-	"time"
 )
 
 type Collector struct {
@@ -68,7 +68,7 @@ func (c *Collector) Start() {
 		case true:
 			metricData := metricDataList.Remove(metricDataList.Front()).(MetricData)
 			c.Mutex.Unlock()
-			log.Printf(">>New Message received from %s. Metric Name: %s. Content: %s", metricData.From, metricData.Name, string(metricData.Payload))
+			log.Printf("<<New Message received from %s>>. Metric Name: %s. Content: %s", metricData.From, metricData.Name, string(metricData.Payload))
 			c.ConsumeMessages(metricData)
 		default:
 			c.Mutex.Unlock()
@@ -141,6 +141,8 @@ func (c *Collector) ConsumeMessages(metricData MetricData) {
 
 func (c *Collector) handleSystemMetric(metricData MetricData) {
 
+	defer utils.HandlePanicError()
+
 	var sys metrics.System
 	if err := utils.FromBytesToStruct(metricData.Payload, &sys); err != nil {
 		log.Println(err)
@@ -158,6 +160,8 @@ func (c *Collector) handleSystemMetric(metricData MetricData) {
 
 func (c *Collector) handleCpuMetric(metricData MetricData) {
 
+	defer utils.HandlePanicError()
+
 	var cpu metrics.Cpu
 	if err := utils.FromBytesToStruct(metricData.Payload, &cpu); err != nil {
 		log.Println(err)
@@ -174,6 +178,8 @@ func (c *Collector) handleCpuMetric(metricData MetricData) {
 
 func (c *Collector) handleTcpMetric(metricData MetricData) {
 
+	defer utils.HandlePanicError()
+
 	var tcp metrics.Tcp
 	if err := utils.FromBytesToStruct(metricData.Payload, &tcp); err != nil {
 		log.Println(err)
@@ -189,6 +195,8 @@ func (c *Collector) handleTcpMetric(metricData MetricData) {
 }
 
 func (c *Collector) handleMemoryMetric(metricData MetricData) {
+
+	defer utils.HandlePanicError()
 
 	var mem metrics.Memory
 	if err := utils.FromBytesToStruct(metricData.Payload, &mem); err != nil {

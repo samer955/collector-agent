@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
+      containers:
+        - image: grafana/grafana:latest
+          imagePullPolicy: IfNotPresent
+          name: grafana
+          env:
+          - name: GF_SECURITY_ALLOW_EMBEDDING
+            value: "true"
+          - name: GF_DATABASE_TYPE
+            value: mysql
+          - name: GF_DATABASE_HOST
+            value: mysql
+          - name: GF_DATABASE_PORT
+            value: "3306"
+          - name: GF_DATABASE_NAME
+            value: testdb
+          - name: GF_DATABASE_USER
+            value: user
+          - name: GF_DATABASE_PASSWORD
+            value: password
+          - name: GF_DATABASE_MAX_OPEN_CONN
+            value: "300"
+          ports:
+            - containerPort: 3000
+              name: http-grafana
+              protocol: TCP
+          volumeMounts:
+          - name: grafana-data
+            mountPath: /var/lib/grafana
+      volumes:
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-pvc
